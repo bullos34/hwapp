@@ -8,8 +8,9 @@ interface LogoProps {
 
 export function Logo({ size = 40, className = '' }: LogoProps) {
   const [useFallback, setUseFallback] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
-  if (useFallback) {
+  if (useFallback || imageError) {
     return (
       <div className={`flex justify-center ${className}`}>
         <img
@@ -19,6 +20,10 @@ export function Logo({ size = 40, className = '' }: LogoProps) {
           height={size}
           className="opacity-60 hover:opacity-80 transition-opacity duration-300"
           style={{ width: size, height: size }}
+          onError={() => {
+            console.error('Image completely failed to load, showing text fallback')
+            setImageError(true)
+          }}
         />
       </div>
     )
@@ -35,6 +40,9 @@ export function Logo({ size = 40, className = '' }: LogoProps) {
         onError={() => {
           console.error('Failed to load HW logo with Next.js Image, falling back to regular img tag')
           setUseFallback(true)
+        }}
+        onLoad={() => {
+          console.log('HW logo loaded successfully')
         }}
         priority
       />
